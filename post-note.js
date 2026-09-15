@@ -15,38 +15,26 @@ const { chromium } = require("playwright");
 
   await page.waitForTimeout(3000);
 
-  console.log("ログイン情報を入力しています...");
-
   const inputs = page.locator("input");
+
+  console.log("ログイン入力欄:", await inputs.count());
 
   await inputs.nth(0).fill(process.env.NOTE_EMAIL);
   await inputs.nth(1).fill(process.env.NOTE_PASSWORD);
 
+  console.log("ログインボタンを押します...");
+
   await page.locator('button[type="submit"]').click();
 
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(8000);
 
   console.log("ログイン後URL:", page.url());
+  console.log("ページタイトル:", await page.title());
 
-  console.log("新規記事作成画面を開いています...");
+  const bodyText = await page.locator("body").innerText();
 
-  await page.goto("https://note.com/notes/new", {
-    waitUntil: "domcontentloaded"
-  });
-
-  await page.waitForTimeout(5000);
-
-  console.log("現在のURL:", page.url());
-
-  const allInputs = page.locator("input");
-  const textareas = page.locator("textarea");
-  const editors = page.locator('[contenteditable="true"]');
-
-  console.log("inputの数:", await allInputs.count());
-  console.log("textareaの数:", await textareas.count());
-  console.log("contenteditableの数:", await editors.count());
-
-  console.log("noteの入力欄を確認しました");
+  console.log("ログイン後画面の先頭:");
+  console.log(bodyText.substring(0, 1000));
 
   await browser.close();
 })();
