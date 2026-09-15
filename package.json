@@ -1,0 +1,12 @@
+{
+  "name": "note-auto-post",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install-browser": "npx playwright install chromium",
+    "post": "node post-note.js"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}
