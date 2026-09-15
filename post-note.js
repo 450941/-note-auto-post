@@ -10,11 +10,21 @@ const { chromium } = require("playwright");
 
   const page = await browser.newPage();
 
+  console.log("noteにアクセス中...");
+
   await page.goto("https://note.com/login", {
 
     waitUntil: "domcontentloaded"
 
   });
+
+  console.log("ログイン情報を入力中...");
+
+  const emailInput = page.locator('input').filter({ has: undefined }).first();
+
+  const inputs = await page.locator('input').all();
+
+  console.log(`入力欄を${inputs.length}個検出しました`);
 
   await page.locator('input[type="email"], input[name="email"]').first().fill(process.env.NOTE_EMAIL);
 
@@ -24,13 +34,7 @@ const { chromium } = require("playwright");
 
   await page.waitForTimeout(5000);
 
-  console.log("ログイン後URL:", page.url());
-
-  console.log("ページタイトル:", await page.title());
-
-  const links = await page.locator("a").allTextContents();
-
-  console.log("画面上のリンク:", links.slice(0, 30));
+  console.log("ログイン処理完了");
 
   await browser.close();
 
