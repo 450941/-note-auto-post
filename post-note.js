@@ -1,29 +1,39 @@
-name: Note Auto Post
+const { chromium } = require("playwright");
 
-on:
-  workflow_dispatch:
+(async () => {
 
-jobs:
-  post:
-    runs-on: ubuntu-latest
+  const browser = await chromium.launch({
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    headless: true
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+  });
 
-      - name: Install dependencies
-        run: npm install
+  const page = await browser.newPage();
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps chromium
+  console.log("noteログインページを開いています...");
 
-      - name: Run note post
-        env:
-          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
-          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
-        run: npm run post
+  await page.goto("https://note.com/login", {
+
+    waitUntil: "domcontentloaded"
+
+  });
+
+  await page.waitForTimeout(2000);
+
+  console.log("ログイン情報を入力しています...");
+
+  await page.locator('input[type="email"]').fill(process.env.NOTE_EMAIL);
+
+  await page.locator('input[type="password"]').fill(process.env.NOTE_PASSWORD);
+
+  await page.locator('button[type="submit"]').click();
+
+  await page.waitForTimeout(5000);
+
+  console.log("ログイン処理が完了しました");
+
+  console.log("現在のURL:", page.url());
+
+  await browser.close();
+
+})();
