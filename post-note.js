@@ -26,8 +26,18 @@ const { chromium } = require("playwright");
 
   await page.waitForTimeout(5000);
 
-  console.log("ログイン処理が完了しました");
+  console.log("ログイン後URL:", page.url());
+
+  console.log("新規記事作成画面を開いています...");
+
+  await page.goto("https://note.com/notes/new", {
+    waitUntil: "domcontentloaded"
+  });
+
+  await page.waitForTimeout(5000);
+
   console.log("現在のURL:", page.url());
+  console.log("新規記事作成画面を開きました");
 
   await browser.close();
 })();
