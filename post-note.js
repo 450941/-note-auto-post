@@ -1,41 +1,30 @@
 const { chromium } = require("playwright");
 
 (async () => {
-
   const browser = await chromium.launch({
-
     headless: true
-
   });
 
   const page = await browser.newPage();
 
-  console.log("noteにアクセス中...");
+  console.log("noteログインページを開いています...");
 
   await page.goto("https://note.com/login", {
-
     waitUntil: "domcontentloaded"
-
   });
 
-  console.log("ログイン情報を入力中...");
+  await page.waitForTimeout(2000);
 
-  const emailInput = page.locator('input').filter({ has: undefined }).first();
+  console.log("ログイン情報を入力しています...");
 
-  const inputs = await page.locator('input').all();
-
-  console.log(`入力欄を${inputs.length}個検出しました`);
-
-  await page.locator('input[type="email"], input[name="email"]').first().fill(process.env.NOTE_EMAIL);
-
+  await page.locator('input[type="email"]').fill(process.env.NOTE_EMAIL);
   await page.locator('input[type="password"]').fill(process.env.NOTE_PASSWORD);
 
   await page.locator('button[type="submit"]').click();
 
   await page.waitForTimeout(5000);
 
-  console.log("ログイン処理完了");
+  console.log("ログイン処理が完了しました");
 
   await browser.close();
-
 })();
